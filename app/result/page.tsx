@@ -226,15 +226,26 @@ export default function ResultPage() {
                 transformOrigin: 'center center',
               }}
             />
-            {/* Camera icon centered in frame */}
+            {/* Camera lens icon centered in frame */}
             <div 
               ref={cameraIconRef}
               className="absolute inset-0 flex items-center justify-center cursor-pointer"
             >
               <div className="w-[100px] h-[100px] md:w-[136px] md:h-[136px] flex items-center justify-center hover:scale-110 transition-transform duration-300">
                 <svg width="136" height="136" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#1A1B1C]">
-                  <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path>
-                  <circle cx="12" cy="13" r="3"></circle>
+                  {/* Outer lens ring */}
+                  <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2"/>
+                  {/* Middle lens ring */}
+                  <circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" strokeWidth="1.5"/>
+                  {/* Inner lens aperture */}
+                  <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" strokeWidth="1"/>
+                  {/* Center dot */}
+                  <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+                  {/* Lens segments/iris blades */}
+                  <line x1="12" y1="2" x2="12" y2="8" stroke="currentColor" strokeWidth="1"/>
+                  <line x1="12" y1="16" x2="12" y2="22" stroke="currentColor" strokeWidth="1"/>
+                  <line x1="2" y1="12" x2="8" y2="12" stroke="currentColor" strokeWidth="1"/>
+                  <line x1="16" y1="12" x2="22" y2="12" stroke="currentColor" strokeWidth="1"/>
                 </svg>
               </div>
             </div>
