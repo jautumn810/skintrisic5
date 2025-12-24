@@ -4,20 +4,14 @@ import { useEffect, useRef, useState } from 'react'
 import Header from '@/components/Header'
 import BackButton from '@/components/BackButton'
 import Link from 'next/link'
-import Image from 'next/image'
 
 export default function ResultPage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [analysisData, setAnalysisData] = useState<any>(null)
-  const [imageErrors, setImageErrors] = useState<Set<string>>(new Set())
   const imageInputRef = useRef<HTMLInputElement>(null)
   const cameraIconRef = useRef<HTMLDivElement>(null)
   const galleryIconRef = useRef<HTMLDivElement>(null)
-
-  const handleImageError = (src: string) => {
-    setImageErrors((prev) => new Set(prev).add(src))
-  }
 
   useEffect(() => {
     const imageInput = imageInputRef.current
@@ -203,200 +197,122 @@ export default function ResultPage() {
     <>
       <Header />
       <div className="min-h-[92vh] flex flex-col bg-white relative md:pt-[64px] justify-center">
-        <div className="absolute top-2 left-9 md:left-8 text-left">
+        {/* Rotating dotted geometric pattern background */}
+        <div 
+          className="absolute inset-0 opacity-[0.15] animate-pattern-rotate"
+          style={{
+            backgroundImage: `
+              repeating-linear-gradient(45deg, transparent, transparent 15px, rgba(160, 164, 171, 0.3) 15px, rgba(160, 164, 171, 0.3) 16px),
+              repeating-linear-gradient(-45deg, transparent, transparent 15px, rgba(160, 164, 171, 0.3) 15px, rgba(160, 164, 171, 0.3) 16px)
+            `,
+            backgroundSize: '30px 30px',
+            backgroundPosition: 'center',
+            transformOrigin: 'center center',
+          }}
+        />
+        
+        <div className="absolute top-2 left-9 md:left-8 text-left z-10">
           <p className="font-semibold text-xs md:text-sm">TO START ANALYSIS</p>
         </div>
-        <div className="flex-[0.4] md:flex-1 flex flex-col md:flex-row items-center xl:justify-center relative mb-0 md:mb-30 space-y-[-20px] md:space-y-0">
-          <div className="relative md:absolute md:left-[55%] lg:left-[50%] xl:left-[40%] md:-translate-y-[0%] -translate-y-[1%] md:-translate-x-full flex flex-col items-center justify-center">
-            <div className="w-[270px] h-[270px] md:w-[482px] md:h-[482px]"></div>
-            {!imageErrors.has('/ResDiamond-large.png') && (
-              <img
-                alt="Diamond Large"
-                loading="lazy"
-                width={482}
-                height={482}
-                className="absolute w-[270px] h-[270px] md:w-[482px] md:h-[482px] animate-spin-slow rotate-200"
-                style={{ color: 'transparent' }}
-                src="/ResDiamond-large.png"
-                onError={() => handleImageError('/ResDiamond-large.png')}
-              />
-            )}
-            {!imageErrors.has('/ResDiamond-medium.png') && (
-              <img
-                alt="DiamondMedium"
-                loading="lazy"
-                width={444}
-                height={444}
-                className="absolute w-[230px] h-[230px] md:w-[444.34px] md:h-[444.34px] animate-spin-slower rotate-190"
-                style={{ color: 'transparent' }}
-                src="/ResDiamond-medium.png"
-                onError={() => handleImageError('/ResDiamond-medium.png')}
-              />
-            )}
-            {!imageErrors.has('/ResDiamond-small.png') && (
-              <img
-                alt="DiamondSmall"
-                loading="lazy"
-                width={405}
-                height={405}
-                className="absolute w-[190px] h-[190px] md:w-[405.18px] md:h-[405.18px] animate-spin-slowest"
-                style={{ color: 'transparent' }}
-                src="/ResDiamond-small.png"
-                onError={() => handleImageError('/ResDiamond-small.png')}
-              />
-            )}
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div
-                ref={cameraIconRef}
-                className="absolute w-[100px] h-[100px] md:w-[136px] md:h-[136px] hover:scale-108 duration-700 ease-in-out cursor-pointer"
-              >
-                {!imageErrors.has('/camera-icon.png') ? (
-                  <img
-                    alt="Camera Icon"
-                    loading="lazy"
-                    width={136}
-                    height={136}
-                    className="w-full h-full"
-                    style={{ color: 'transparent' }}
-                    src="/camera-icon.png"
-                    onError={() => handleImageError('/camera-icon.png')}
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded-full">
-                    <span className="text-4xl">📷</span>
-                  </div>
-                )}
-              </div>
-              <div className="absolute bottom-[1%] right-[90px] md:top-[30.9%] md:right-[-12px] translate-y-[-20px]">
-                <p className="text-xs md:text-sm font-normal mt-1 leading-[24px]">
-                  ALLOW A.I.
-                  <br />
-                  TO SCAN YOUR FACE
-                </p>
-                {!imageErrors.has('/ResScanLine.png') && (
-                  <img
-                    alt="Scan Line"
-                    loading="lazy"
-                    width={66}
-                    height={59}
-                    className="absolute hidden md:block md:right-[143px] md:top-[20px]"
-                    style={{ color: 'transparent' }}
-                    src="/ResScanLine.png"
-                    onError={() => handleImageError('/ResScanLine.png')}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="relative md:absolute md:left-[45%] lg:left-[50%] xl:left-[55%] flex flex-col items-center mt-12 md:mt-0 justify-center md:-translate-y-[0%] -translate-y-[10%] transition-opacity duration-300 opacity-100">
-            <div className="w-[270px] h-[270px] md:w-[482px] md:h-[482px]"></div>
-            {!imageErrors.has('/ResDiamond-large.png') && (
-              <img
-                alt="Diamond Large"
-                loading="lazy"
-                width={484}
-                height={484}
-                className="absolute w-[270px] h-[270px] md:w-[482px] md:h-[482px] animate-spin-slow rotate-205"
-                style={{ color: 'transparent' }}
-                src="/ResDiamond-large.png"
-                onError={() => handleImageError('/ResDiamond-large.png')}
-              />
-            )}
-            {!imageErrors.has('/ResDiamond-medium.png') && (
-              <img
-                alt="DiamondMedium"
-                loading="lazy"
-                width={448}
-                height={448}
-                className="absolute w-[230px] h-[230px] md:w-[444.34px] md:h-[444.34px] animate-spin-slower rotate-195"
-                style={{ color: 'transparent' }}
-                src="/ResDiamond-medium.png"
-                onError={() => handleImageError('/ResDiamond-medium.png')}
-              />
-            )}
-            {!imageErrors.has('/ResDiamond-small.png') && (
-              <img
-                alt="DiamondSmall"
-                loading="lazy"
-                width={408}
-                height={408}
-                className="absolute w-[190px] h-[190px] md:w-[405.18px] md:h-[405.18px] animate-spin-slowest"
-                style={{ color: 'transparent' }}
-                src="/ResDiamond-small.png"
-                onError={() => handleImageError('/ResDiamond-small.png')}
-              />
-            )}
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div
-                ref={galleryIconRef}
-                className="absolute w-[100px] h-[100px] md:w-[136px] md:h-[136px] hover:scale-108 duration-700 ease-in-out cursor-pointer"
-              >
-                {!imageErrors.has('/gallery-icon.png') ? (
-                  <img
-                    alt="Photo Upload Icon"
-                    loading="lazy"
-                    width={136}
-                    height={136}
-                    className="w-full h-full"
-                    style={{ color: 'transparent' }}
-                    src="/gallery-icon.png"
-                    onError={() => handleImageError('/gallery-icon.png')}
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded-full">
-                    <span className="text-4xl">🖼️</span>
-                  </div>
-                )}
-              </div>
-              <div className="absolute top-[75%] md:top-[70%] md:left-[17px] translate-y-[-10px]">
-                <p className="text-[12px] md:text-[14px] font-normal mt-2 leading-[24px] text-right">
-                  ALLOW A.I.
-                  <br />
-                  ACCESS GALLERY
-                </p>
-                {!imageErrors.has('/ResGalleryLine.png') && (
-                  <img
-                    alt="Gallery Line"
-                    loading="lazy"
-                    width={66}
-                    height={59}
-                    className="absolute hidden md:block md:left-[120px] md:bottom-[39px]"
-                    style={{ color: 'transparent' }}
-                    src="/ResGalleryLine.png"
-                    onError={() => handleImageError('/ResGalleryLine.png')}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="absolute top-[-75px] right-7 md:top-[-50px] md:right-8 transition-opacity duration-300 opacity-100">
-            <h1 className="text-xs md:text-sm font-normal mb-1">Preview</h1>
-            <div
-              className="w-24 h-24 md:w-32 md:h-32 border border-gray-300 overflow-hidden relative"
+        
+        {/* Main content - vertically stacked */}
+        <div className="flex flex-col items-center justify-center relative z-10 space-y-16 md:space-y-20 py-20">
+          {/* Camera/Face Scan Section */}
+          <div className="relative flex flex-col items-center justify-center">
+            {/* Rotating dotted square frame */}
+            <div 
+              className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] border border-dotted border-[#A0A4AB] animate-pattern-rotate"
               style={{
-                backgroundImage: imagePreview ? `url(${imagePreview})` : 'none',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
+                transformOrigin: 'center center',
               }}
+            />
+            {/* Camera icon centered in frame */}
+            <div 
+              ref={cameraIconRef}
+              className="absolute inset-0 flex items-center justify-center cursor-pointer"
             >
-              {isAnalyzing && (
-                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                  <div className="text-white text-xs">Analyzing...</div>
-                </div>
-              )}
+              <div className="w-[100px] h-[100px] md:w-[136px] md:h-[136px] flex items-center justify-center hover:scale-110 transition-transform duration-300">
+                <svg width="136" height="136" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#1A1B1C]">
+                  <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path>
+                  <circle cx="12" cy="13" r="3"></circle>
+                </svg>
+              </div>
+            </div>
+            {/* Text below icon */}
+            <div className="mt-6 text-center">
+              <p className="text-xs md:text-sm font-normal leading-[24px]">
+                ALLOW A.I.
+                <br />
+                TO SCAN YOUR FACE
+              </p>
             </div>
           </div>
-          <input
-            ref={imageInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            id="image-input"
-          />
+
+          {/* Gallery Section */}
+          <div className="relative flex flex-col items-center justify-center">
+            {/* Rotating dotted square frame */}
+            <div 
+              className="w-[300px] h-[300px] md:w-[400px] md:h-[400px] border border-dotted border-[#A0A4AB] animate-pattern-rotate"
+              style={{
+                transformOrigin: 'center center',
+              }}
+            />
+            {/* Gallery icon centered in frame */}
+            <div 
+              ref={galleryIconRef}
+              className="absolute inset-0 flex items-center justify-center cursor-pointer"
+            >
+              <div className="w-[100px] h-[100px] md:w-[136px] md:h-[136px] flex items-center justify-center hover:scale-110 transition-transform duration-300">
+                <svg width="136" height="136" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#1A1B1C]">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+              </div>
+            </div>
+            {/* Text below icon */}
+            <div className="mt-6 text-center">
+              <p className="text-xs md:text-sm font-normal leading-[24px]">
+                ALLOW A.I.
+                <br />
+                ACCESS GALLERY
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="pt-4 md:pt-0 pb-8 bg-white sticky md:static bottom-30.5 mb-0 md:mb-0">
+
+        {/* Preview section - top right */}
+        <div className="absolute top-[-75px] right-7 md:top-[-50px] md:right-8 transition-opacity duration-300 opacity-100 z-10">
+          <h1 className="text-xs md:text-sm font-normal mb-1">Preview</h1>
+          <div
+            className="w-24 h-24 md:w-32 md:h-32 border border-gray-300 overflow-hidden relative"
+            style={{
+              backgroundImage: imagePreview ? `url(${imagePreview})` : 'none',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          >
+            {isAnalyzing && (
+              <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                <div className="text-white text-xs">Analyzing...</div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Hidden file input */}
+        <input
+          ref={imageInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          id="image-input"
+        />
+
+        {/* Bottom navigation */}
+        <div className="pt-4 md:pt-0 pb-8 bg-white sticky md:static bottom-30.5 mb-0 md:mb-0 z-10">
           <div className="absolute bottom-8 w-full flex justify-between md:px-9 px-13">
-            <BackButton href="/testing" />
+            <BackButton href="/thank-you" />
             {imagePreview && (
               <Link href="/select" id="proceed-link">
                 <div>
@@ -423,4 +339,3 @@ export default function ResultPage() {
     </>
   )
 }
-
