@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
-  trailingSlash: true,
+  // Remove output: 'standalone' for Vercel deployment
+  // Vercel automatically handles the build output
 }
 
 export default nextConfig
