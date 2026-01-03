@@ -69,11 +69,11 @@ export default function CityPage() {
       )}
 
       <div className="back-fixed">
-        <DiamondButton label="BACK" variant="white" onClick={() => router.back()} />
+        <DiamondButton label="BACK" variant="white" onClick={() => router.back()} className="small" />
       </div>
 
       <div className="right-fixed">
-        <DiamondButton label={loading ? "..." : "PROCEED"} variant="black" onClick={() => { if (!loading) onProceed(); }} />
+        <DiamondButton label={loading ? "..." : "PROCEED"} variant="black" onClick={() => { if (!loading) onProceed(); }} className="small" />
       </div>
     </div>
   )
