@@ -10,30 +10,37 @@ import { loadUser, saveUser } from '../../../lib/storage'
 import { postPhaseOne } from '../../../lib/api'
 
 export default function CityPage() {
+  console.log('CityPage component rendering');
   const router = useRouter()
   const [city, setCity] = useState("")
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    console.log('✅ CityPage useEffect running');
     const u = loadUser()
     if (u?.location) setCity(u.location)
     
     // Debug: Check if buttons have small class and CSS rules
     setTimeout(() => {
-      console.log('=== CITY PAGE BUTTON DEBUG ===');
+      console.log('%c=== CITY PAGE BUTTON DEBUG ===', 'color: blue; font-size: 16px; font-weight: bold;');
       const buttons = document.querySelectorAll('.back-fixed .diamond-btn, .right-fixed .diamond-btn');
       console.log(`Found ${buttons.length} buttons`);
       
+      if (buttons.length === 0) {
+        console.warn('⚠️ No buttons found! Make sure you are on the city page.');
+      }
+      
       buttons.forEach((btn, index) => {
         const computedStyle = window.getComputedStyle(btn);
-        console.log(`\n--- Button ${index + 1} ---`);
+        console.log(`%c--- Button ${index + 1} ---`, 'color: green; font-weight: bold;');
         console.log('className:', btn.className);
         console.log('classList:', Array.from(btn.classList));
         console.log('has "small" class:', btn.classList.contains('small'));
         console.log('has "diamond-btn" class:', btn.classList.contains('diamond-btn'));
         console.log('Computed width:', computedStyle.width);
         console.log('Computed height:', computedStyle.height);
+        console.log('Window width (for mobile check):', window.innerWidth);
         
         // Check if CSS rule exists
         const stylesheets = Array.from(document.styleSheets);
@@ -43,7 +50,7 @@ export default function CityPage() {
             const rules = Array.from(sheet.cssRules || []);
             rules.forEach((rule, ruleIndex) => {
               if (rule.selectorText && rule.selectorText.includes('.diamond-btn.small')) {
-                console.log(`Found .diamond-btn.small rule in stylesheet ${sheetIndex}, rule ${ruleIndex}:`, rule.cssText);
+                console.log(`✅ Found .diamond-btn.small rule in stylesheet ${sheetIndex}, rule ${ruleIndex}:`, rule.cssText);
                 smallRuleFound = true;
               }
             });
@@ -53,7 +60,7 @@ export default function CityPage() {
         });
         console.log('Small CSS rule found:', smallRuleFound);
       });
-      console.log('=== END DEBUG ===\n');
+      console.log('%c=== END DEBUG ===', 'color: blue; font-size: 16px; font-weight: bold;');
     }, 100);
   }, [])
 

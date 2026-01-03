@@ -5,6 +5,8 @@ import IntroducePage from './pages/analysis/IntroducePage'
 import PermissionsPage from './pages/analysis/PermissionsPage'
 import ImagePage from './pages/analysis/ImagePage'
 import SelfiePage from './pages/analysis/SelfiePage'
+import ProcessingPage from './pages/analysis/ProcessingPage'
+import AnalysisResultsPage from './pages/analysis/AnalysisResultsPage'
 import DemographicsPage from './pages/analysis/DemographicsPage'
 import CityPage from './pages/analysis/CityPage'
 import SummaryPage from './pages/SummaryPage'
@@ -21,6 +23,8 @@ function App() {
         <Route path="/analysis/permissions" element={<PermissionsPage />} />
         <Route path="/analysis/image" element={<ImagePage />} />
         <Route path="/analysis/selfie" element={<SelfiePage />} />
+        <Route path="/analysis/processing" element={<ProcessingPage />} />
+        <Route path="/analysis/results" element={<AnalysisResultsPage />} />
         <Route path="/analysis/demographics" element={<DemographicsPage />} />
         <Route path="/analysis/city" element={<CityPage />} />
         <Route path="/summary" element={<SummaryPage />} />

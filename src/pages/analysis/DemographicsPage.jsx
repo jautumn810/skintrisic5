@@ -11,8 +11,8 @@ function sortScores(scores) {
 }
 
 function ArcMeter({ value = 0.0 }) {
-  const size = 720
-  const stroke = 18
+  const size = 280
+  const stroke = 8
   const r = (size - stroke) / 2
   const c = 2 * Math.PI * r
   const dash = c * value
@@ -20,7 +20,7 @@ function ArcMeter({ value = 0.0 }) {
 
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
-      <svg width="100%" viewBox={`0 0 ${size} ${size}`} style={{ maxWidth: 740 }}>
+      <svg width="100%" viewBox={`0 0 ${size} ${size}`} style={{ maxWidth: 280 }}>
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#cfcfcf" strokeWidth={stroke} />
         <circle
           cx={size / 2}
@@ -46,14 +46,28 @@ export default function DemographicsPage() {
   const [actualGender, setActualGender] = useState("")
 
   useEffect(() => {
-    setAi(loadAI())
+    const loadedAi = loadAI()
+    console.log('Loaded AI data from storage:', JSON.stringify(loadedAi, null, 2))
+    setAi(loadedAi)
   }, [])
 
   const { raceList, ageList, genderList } = useMemo(() => {
     const race = ai?.data?.race ?? {}
     const age = ai?.data?.age ?? {}
     const gender = ai?.data?.gender ?? {}
-    return { raceList: sortScores(race), ageList: sortScores(age), genderList: sortScores(gender) }
+    console.log('Demographics data (raw):', JSON.stringify({ race, age, gender }, null, 2))
+    const sorted = {
+      raceList: sortScores(race),
+      ageList: sortScores(age),
+      genderList: sortScores(gender)
+    }
+    console.log('Sorted demographics (first item in each):', {
+      raceTop: sorted.raceList[0],
+      ageTop: sorted.ageList[0],
+      genderTop: sorted.genderList[0]
+    })
+    console.log('All sorted demographics:', JSON.stringify(sorted, null, 2))
+    return sorted
   }, [ai])
 
   useEffect(() => {
@@ -61,27 +75,6 @@ export default function DemographicsPage() {
     if (!actualAge && ageList.length) setActualAge(ageList[0].label)
     if (!actualGender && genderList.length) setActualGender(genderList[0].label)
   }, [raceList, ageList, genderList, actualRace, actualAge, actualGender])
-
-  if (!ai?.data) {
-    return (
-      <div className="min-h-screen bg-white">
-        <SiteHeader section="INTRO" />
-        <div style={{ paddingTop: 180, maxWidth: 980, margin: "0 auto", paddingLeft: 28, paddingRight: 28 }}>
-          <div style={{ fontSize: 28, fontWeight: 900 }}>A.I. ANALYSIS</div>
-          <div style={{ marginTop: 18, color: "rgba(0,0,0,0.6)" }}>
-            No demographics data found yet. Upload an image or take a selfie first.
-          </div>
-          <button
-            type="button"
-            onClick={() => navigate("/analysis/image")}
-            style={{ marginTop: 18, padding: "10px 14px", background: "#111", color: "#fff", border: "none", fontWeight: 900 }}
-          >
-            GO TO IMAGE STEP
-          </button>
-        </div>
-      </div>
-    )
-  }
 
   const raceTop = raceList[0]
   const confidenceValue = raceTop ? raceTop.raw : 0.0
@@ -95,101 +88,63 @@ export default function DemographicsPage() {
         <div className="dem-h1">DEMOGRAPHICS</div>
         <div className="dem-sub">PREDICTED RACE &amp; AGE</div>
 
-        <div className="dem-cards">
-          <div className="dem-card black">
-            <div className="topline">{actualRace || "-"}</div>
-            <div className="bottomline">RACE</div>
+        <div className="dem-content-layout">
+          <div className="dem-cards">
+            <div className="dem-card black">
+              <div className="topline">{actualRace || "-"}</div>
+              <div className="bottomline">RACE</div>
+            </div>
+
+            <div className="dem-card">
+              <div className="topline" style={{ color: "rgba(0,0,0,0.8)" }}>{actualAge || "-"}</div>
+              <div className="bottomline" style={{ color: "rgba(0,0,0,0.85)" }}>AGE</div>
+            </div>
+
+            <div className="dem-card">
+              <div className="topline" style={{ color: "rgba(0,0,0,0.8)" }}>{(actualGender || "-").toUpperCase()}</div>
+              <div className="bottomline" style={{ color: "rgba(0,0,0,0.85)" }}>SEX</div>
+            </div>
           </div>
 
-          <div className="dem-card">
-            <div className="topline" style={{ color: "rgba(0,0,0,0.8)" }}>{actualAge || "-"}</div>
-            <div className="bottomline" style={{ color: "rgba(0,0,0,0.85)" }}>AGE</div>
+          <div className="dem-arc-block">
+            <ArcMeter value={confidenceValue} />
+            <div className="dem-arc-instruction">If A.I. estimate is wrong, select the correct one.</div>
           </div>
 
-          <div className="dem-card">
-            <div className="topline" style={{ color: "rgba(0,0,0,0.8)" }}>{(actualGender || "-").toUpperCase()}</div>
-            <div className="bottomline" style={{ color: "rgba(0,0,0,0.85)" }}>SEX</div>
-          </div>
-        </div>
+          <div className="dem-table">
+            <div className="dem-table-head">
+              <div>RACE</div>
+              <div style={{ textAlign: "right" }}>A.I. CONFIDENCE</div>
+            </div>
 
-        <div className="dem-arc-block">
-          <ArcMeter value={confidenceValue} />
-          <div className="dem-arc-instruction">If A.I. estimate is wrong, select the correct one.</div>
-        </div>
-
-        <div className="dem-table" style={{ marginTop: 18 }}>
-          <div className="dem-table-head">
-            <div>RACE</div>
-            <div style={{ textAlign: "right" }}>A.I. CONFIDENCE</div>
-          </div>
-
-          {raceList.map((opt) => (
-            <button
-              key={opt.label}
-              type="button"
-              className={`dem-row ${actualRace === opt.label ? "selected" : ""}`}
-              style={{ width: "100%", textAlign: "left", border: "none", cursor: "pointer" }}
-              onClick={() => setActualRace(opt.label)}
-            >
-              <div className="dem-left">
-                <div className="dem-radio" />
-                <div>{opt.label}</div>
+            {raceList.length > 0 ? (
+              raceList.map((opt) => (
+                <button
+                  key={opt.label}
+                  type="button"
+                  className={`dem-row ${actualRace === opt.label ? "selected" : ""}`}
+                  style={{ width: "100%", textAlign: "left", border: "none", cursor: "pointer" }}
+                  onClick={() => setActualRace(opt.label)}
+                >
+                  <div className="dem-left">
+                    <div className="dem-radio" />
+                    <div>{opt.label}</div>
+                  </div>
+                  <div className="dem-right">{opt.pct}%</div>
+                </button>
+              ))
+            ) : (
+              <div className="dem-row" style={{ padding: "10px 12px", color: "rgba(0,0,0,0.45)" }}>
+                <div>No data available</div>
               </div>
-              <div className="dem-right">{opt.pct}%</div>
-            </button>
-          ))}
-        </div>
-
-        <div className="dem-table" style={{ marginTop: 18 }}>
-          <div className="dem-table-head">
-            <div>AGE</div>
-            <div style={{ textAlign: "right" }}>A.I. CONFIDENCE</div>
+            )}
           </div>
-
-          {ageList.map((opt) => (
-            <button
-              key={opt.label}
-              type="button"
-              className={`dem-row ${actualAge === opt.label ? "selected" : ""}`}
-              style={{ width: "100%", textAlign: "left", border: "none", cursor: "pointer" }}
-              onClick={() => setActualAge(opt.label)}
-            >
-              <div className="dem-left">
-                <div className="dem-radio" />
-                <div>{opt.label}</div>
-              </div>
-              <div className="dem-right">{opt.pct}%</div>
-            </button>
-          ))}
-        </div>
-
-        <div className="dem-table" style={{ marginTop: 18 }}>
-          <div className="dem-table-head">
-            <div>GENDER</div>
-            <div style={{ textAlign: "right" }}>A.I. CONFIDENCE</div>
-          </div>
-
-          {genderList.map((opt) => (
-            <button
-              key={opt.label}
-              type="button"
-              className={`dem-row ${actualGender === opt.label ? "selected" : ""}`}
-              style={{ width: "100%", textAlign: "left", border: "none", cursor: "pointer" }}
-              onClick={() => setActualGender(opt.label)}
-            >
-              <div className="dem-left">
-                <div className="dem-radio" />
-                <div>{opt.label}</div>
-              </div>
-              <div className="dem-right">{opt.pct}%</div>
-            </button>
-          ))}
         </div>
       </div>
 
       <div className="dem-bottom-nav">
-        <DiamondButton label="BACK" variant="white" onClick={() => navigate(-1)} />
-        <DiamondButton label="HOME" variant="white" onClick={() => navigate("/")} />
+        <DiamondButton label="BACK" variant="white" onClick={() => navigate(-1)} className="diamond-btn-small" />
+        <DiamondButton label="HOME" variant="white" onClick={() => navigate("/")} className="diamond-btn-small" />
       </div>
     </div>
   )

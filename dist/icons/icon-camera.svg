@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 220 220">
+  <circle cx="110" cy="110" r="98" fill="white" stroke="#111" stroke-width="6"/>
+  <circle cx="110" cy="110" r="80" fill="white" stroke="#111" stroke-width="4"/>
+  <g transform="translate(110,110)" fill="#111">
+    <path d="M0-52 L28-10 L0 4 L-28-10 Z"/>
+    <path d="M45-26 L22 18 L0 4 L28-10 Z"/>
+    <path d="M45 26 L0 52 L-22 18 L22 18 Z"/>
+    <path d="M0 52 L-45 26 L-22 18 L0 52 Z"/>
+    <path d="M-45 26 L-45-26 L-28-10 L-22 18 Z"/>
+    <path d="M-45-26 L0-52 L-28-10 Z"/>
+  </g>
+</svg>
+
+
+
+

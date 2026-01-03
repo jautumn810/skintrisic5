@@ -35,30 +35,55 @@ export default function SelfiePage() {
   }, [])
 
   async function captureAndAnalyze() {
-    if (!videoRef.current || !canvasRef.current) return
+    if (!videoRef.current || !canvasRef.current) {
+      setError("Video or canvas not ready. Please wait for camera to load.")
+      return
+    }
+    
     setError(null)
     setLoading(true)
 
     try {
       const video = videoRef.current
       const canvas = canvasRef.current
-      const w = video.videoWidth || 640
-      const h = video.videoHeight || 480
+      
+      // Check if video is ready
+      if (!video.videoWidth || !video.videoHeight) {
+        throw new Error("Video stream not ready. Please wait for camera to initialize.")
+      }
+      
+      const w = video.videoWidth
+      const h = video.videoHeight
+      console.log('Video dimensions:', w, 'x', h)
+      
       canvas.width = w
       canvas.height = h
       const ctx = canvas.getContext("2d")
       if (!ctx) throw new Error("Canvas not supported.")
+      
       ctx.drawImage(video, 0, 0, w, h)
 
-      const b64 = canvas.toDataURL("image/png")
-      saveImageBase64(b64)
+      const dataURL = canvas.toDataURL("image/png")
+      console.log('Captured image data URL length:', dataURL?.length)
+      console.log('Data URL prefix:', dataURL?.substring(0, 50))
+      
+      if (!dataURL || typeof dataURL !== 'string' || dataURL.length < 100) {
+        throw new Error("Failed to capture image from canvas. Image data is invalid.")
+      }
+      
+      saveImageBase64(dataURL)
 
-      const json = await postPhaseTwo({ Image: b64 })
+      console.log('Sending image to API, data URL length:', dataURL.length)
+      
+      // Send the full data URL - the API expects this format (same as fileToBase64 returns)
+      const json = await postPhaseTwo({ Image: dataURL })
+      console.log('Phase 2 API response:', json)
       saveAI(json)
-      navigate("/analysis/demographics")
+      alert("Image analyzed successfully")
+      navigate("/analysis/processing")
     } catch (e) {
+      console.error('Capture error:', e)
       setError(e?.message ?? "Failed to capture selfie.")
-    } finally {
       setLoading(false)
     }
   }
@@ -78,8 +103,8 @@ export default function SelfiePage() {
         <button
           type="button"
           onClick={captureAndAnalyze}
-          disabled={loading || !!error}
-          style={{ marginTop: 16, padding: "12px 18px", background: "#111", color: "#fff", border: "none", fontWeight: 900, letterSpacing: "0.06em" }}
+          disabled={loading}
+          style={{ marginTop: 16, padding: "12px 18px", background: "#111", color: "#fff", border: "none", fontWeight: 900, letterSpacing: "0.06em", cursor: loading ? "not-allowed" : "pointer" }}
         >
           {loading ? "CAPTURING..." : "CAPTURE & ANALYZE"}
         </button>

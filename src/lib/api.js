@@ -16,6 +16,11 @@ export async function postPhaseOne(payload) {
 }
 
 export async function postPhaseTwo(payload) {
+  console.log('postPhaseTwo payload keys:', Object.keys(payload))
+  console.log('postPhaseTwo Image field exists:', 'Image' in payload)
+  console.log('postPhaseTwo Image value type:', typeof payload.Image)
+  console.log('postPhaseTwo Image value length:', payload.Image?.length)
+  
   const res = await fetch(PHASE_TWO, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -24,6 +29,7 @@ export async function postPhaseTwo(payload) {
 
   if (!res.ok) {
     const text = await res.text().catch(() => "");
+    console.error('API Error Response:', text)
     throw new Error(`Phase 2 API failed (${res.status}): ${text}`);
   }
   return res.json();
